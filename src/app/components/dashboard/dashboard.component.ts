@@ -4,6 +4,7 @@ import { MatIcon } from '@angular/material/icon';
 import { ApexOptions, NgApexchartsModule } from 'ng-apexcharts';
 import { IMqttMessage, MqttService } from 'ngx-mqtt';
 import { ClientStatusService } from '../../services/client-status.service';
+import { DecimalRound } from "../../helpers/decimalRound";
 
 @Component({
   selector: 'app-dashboard',
