@@ -5,6 +5,7 @@ import { ApexOptions, NgApexchartsModule } from 'ng-apexcharts';
 import { IMqttMessage, MqttService } from 'ngx-mqtt';
 import { ClientStatusService } from '../../services/client-status.service';
 import { DecimalRound } from "../../helpers/decimalRound";
+import { MQTT_TOPCIS } from "../../mqtt/mqtt_topics";
 
 @Component({
   selector: 'app-dashboard',
@@ -34,7 +35,7 @@ export class DashboardComponent {
   initMqtt(): void {
     // Online Status
     this._mqttService
-      .observeRetained('ESP32_4WIN/status', { qos: 1, rap: false })
+      .observeRetained(MQTT_TOPCIS.connectionStatus, { qos: 1, rap: false })
       .subscribe((m: IMqttMessage) => {
         const statusResponse = m.payload.toString();
         const isOnline: boolean = statusResponse === 'Online' ? true : false;
@@ -42,7 +43,7 @@ export class DashboardComponent {
         if (isOnline) {
           // Temperature
           this._mqttService
-            .observeRetained('E9564F1C-3845-4955-BAEC-E39FBF3D613A', { qos: 1 })
+            .observeRetained(MQTT_TOPCIS.temperature, { qos: 1 })
             .subscribe((t: IMqttMessage) => {
               console.log(t);
 
@@ -54,7 +55,7 @@ export class DashboardComponent {
 
           // Humidity
           this._mqttService
-            .observeRetained('424178CD-B52E-42C2-ACF2-F0B7C71A14FD', { qos: 1 })
+            .observeRetained(MQTT_TOPCIS.humidity, { qos: 1 })
             .subscribe((h: IMqttMessage) => {
               console.log(h);
 
