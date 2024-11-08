@@ -20,10 +20,10 @@ import { MQTT_TOPCIS } from "../../mqtt/mqtt_topics";
 })
 export class DashboardComponent {
   public chartOptions: ApexOptions;
-  temperature: string = '';
+  humidity: string = '0';
+  temperature: string = '0';
   prevHumMsgId: number = 0;
   prevTempMsgId: number = 0;
-  humidity: string = '';
 
   constructor(
     private _mqttService: MqttService,
