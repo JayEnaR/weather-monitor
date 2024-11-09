@@ -29,7 +29,14 @@ export class DashboardComponent {
     private _mqttService: MqttService,
     private _clientStatusService: ClientStatusService
   ) {
+    this.initMqtt();
     this.chartOptions = {};
+    
+    this._mqttService.onConnect.subscribe(res => console.log(res));
+    this._mqttService.onOffline.subscribe(() => {
+      // Update client status
+      this._clientStatusService.updateStatus(false);
+    });
   }
 
   initMqtt(): void {
@@ -37,6 +44,8 @@ export class DashboardComponent {
     this._mqttService
       .observeRetained(MQTT_TOPCIS.connectionStatus, { qos: 1, rap: false })
       .subscribe((m: IMqttMessage) => {
+        console.log(m);
+        
         const statusResponse = m.payload.toString();
         const isOnline: boolean = statusResponse === 'Online' ? true : false;
 

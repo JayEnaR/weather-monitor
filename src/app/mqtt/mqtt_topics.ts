@@ -1,5 +1,5 @@
 export const MQTT_TOPCIS = {
-    temperature : "",
-    humidity: "",
-    connectionStatus: ""
+    temperature : "C0za1QbOzfDlSbC/tem",
+    humidity: "C0za1QbOzfDlSbC/hum",
+    connectionStatus: "C0za1QbOzfDlSbC/weather_cube"
 } 
