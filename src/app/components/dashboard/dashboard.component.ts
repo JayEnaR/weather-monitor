@@ -1,21 +1,21 @@
 import { Component } from '@angular/core';
 import { MatMenu } from '@angular/material/menu';
 import { MatIcon } from '@angular/material/icon';
-import { ApexOptions, NgApexchartsModule } from 'ng-apexcharts';
 import { IMqttMessage, MqttService } from 'ngx-mqtt';
 import { ClientStatusService } from '../../services/client-status.service';
-import { DecimalRound } from '../../helpers/decimalRound';
 import { MQTT_TOPCIS } from '../../mqtt/mqtt_topics';
+import { ChartComponent } from "../chart/chart.component";
+import { CommonModule } from '@angular/common';
+import { StringToNumberPipe } from "../../helpers/numberConvert.pipe";
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [MatMenu, MatIcon, NgApexchartsModule],
+  imports: [MatMenu, MatIcon, ChartComponent, CommonModule, StringToNumberPipe],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
 export class DashboardComponent {
-  public chartOptions: ApexOptions;
   humidity: string = '0';
   temperature: string = '0';
   prevHumMsgId: number = 0;
@@ -26,7 +26,6 @@ export class DashboardComponent {
     private _clientStatusService: ClientStatusService
   ) {
     this.initMqtt();
-    this.chartOptions = {};
   }
 
   initMqtt(): void {
