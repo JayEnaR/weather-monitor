@@ -27,11 +27,11 @@ export class ChartComponent implements OnChanges {
       series: [
         {
           name: 'Temperature',
-          data: []
+          data: [],
         },
         {
           name: 'Humidity',
-          data: []
+          data: [],
         },
       ],
       chart: { type: 'area' },
@@ -44,19 +44,13 @@ export class ChartComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     const temp = changes['temperature'];
     const humid = changes['humidity'];
-    if (temp) {
-      console.log(temp.currentValue);
-
-      this.tempArr.push(temp.currentValue);
-      this.chartOptions.series = [
-        { data: this.tempArr },
-        { data: this.humidArr },
-      ];
-    }
-    if (humid) {
-      console.log(humid.currentValue);
-
-      this.humidArr.push(humid.currentValue);
+    if (temp || humid) {
+      this.tempArr.push(
+        temp?.currentValue ?? this.tempArr[this.humidArr.length - 1]
+      );
+      this.humidArr.push(
+        humid?.currentValue ?? this.humidArr[this.humidArr.length - 1]
+      );
       this.chartOptions.series = [
         { data: this.tempArr },
         { data: this.humidArr },
