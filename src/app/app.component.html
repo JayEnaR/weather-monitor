@@ -6,10 +6,19 @@
         </a>
         <div class="ml-auto flex items-center space-x-0.5 pl-2 sm:space-x-4">
             <ng-container *ngIf="_clientStatusService.status$ | async; else offline">
-                <button mat-icon-button>
+                <button mat-icon-button [matMenuTriggerFor]="menu" >
                     <mat-icon>cloud_done</mat-icon>
                 </button>
             </ng-container>
+            <mat-menu [xPosition]="'before'" #menu="matMenu">
+                <ng-container >
+                    <button mat-menu-item [routerLink]="['find-device']">
+                        <span class="flex flex-col leading-none">
+                            <span>Find device</span>
+                        </span>
+                    </button>
+                </ng-container>
+            </mat-menu>
         </div>
     </div>
 

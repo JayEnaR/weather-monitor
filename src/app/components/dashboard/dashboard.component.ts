@@ -4,9 +4,9 @@ import { MatIcon } from '@angular/material/icon';
 import { IMqttMessage, MqttService } from 'ngx-mqtt';
 import { ClientStatusService } from '../../services/client-status.service';
 import { MQTT_TOPCIS } from '../../mqtt/mqtt_topics';
-import { ChartComponent } from "../chart/chart.component";
+import { ChartComponent } from '../chart/chart.component';
 import { CommonModule } from '@angular/common';
-import { StringToNumberPipe } from "../../helpers/numberConvert.pipe";
+import { StringToNumberPipe } from '../../helpers/numberConvert.pipe';
 
 @Component({
   selector: 'app-dashboard',
@@ -30,49 +30,30 @@ export class DashboardComponent {
 
   initMqtt(): void {
     // Online Status
-    this._mqttService
-      .observeRetained(MQTT_TOPCIS.connectionStatus, { qos: 1, rap: false })
-      .subscribe((m: IMqttMessage) => {
-        const statusResponse = m.payload.toString();
-        const isOnline: boolean = statusResponse
-          .trim()
-          .toLowerCase()
-          .startsWith('connect')
-          ? true
-          : false;
-        console.log(`Online: ${isOnline} (${statusResponse})`);
-
-        if (isOnline) {
-          // Temperature
-          this._mqttService
-            .observeRetained(MQTT_TOPCIS.temperature, { qos: 1 })
-            .subscribe((t: IMqttMessage) => {
-              console.log(t);
-
-              if (!t.dup && t.messageId != this.prevTempMsgId) {
-                this.temperature = t.payload.toString();
-                this.prevTempMsgId = t.messageId!;
-              }
-            });
-
-          // Humidity
-          this._mqttService
-            .observeRetained(MQTT_TOPCIS.humidity, { qos: 1 })
-            .subscribe((h: IMqttMessage) => {
-              console.log(h);
-
-              if (!h.dup && h.messageId != this.prevHumMsgId) {
-                this.humidity = h.payload.toString();
-                this.prevHumMsgId = h.messageId!;
-              }
-            });
-        } else {
-          this.temperature = '0';
-          this.humidity = '0';
-        }
-
-        // Indicate the client status
-        this._clientStatusService.updateStatus(isOnline);
-      });
+    this._clientStatusService.status$.subscribe((status) => {
+      if (!status) {
+        this.humidity = '0';
+        this.temperature = '0';
+      } else {
+        // Temperature
+        this._mqttService
+          .observeRetained(MQTT_TOPCIS.temperature, { qos: 1 })
+          .subscribe((t: IMqttMessage) => {
+            if (!t.dup && t.messageId != this.prevTempMsgId) {
+              this.temperature = t.payload.toString();
+              this.prevTempMsgId = t.messageId!;
+            }
+          });
+        // Humidity
+        this._mqttService
+          .observeRetained(MQTT_TOPCIS.humidity, { qos: 1 })
+          .subscribe((h: IMqttMessage) => {
+            if (!h.dup && h.messageId != this.prevHumMsgId) {
+              this.humidity = h.payload.toString();
+              this.prevHumMsgId = h.messageId!;
+            }
+          });
+      }
+    });
   }
 }
