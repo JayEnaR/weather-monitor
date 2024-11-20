@@ -7,11 +7,12 @@ import { MQTT_TOPCIS } from '../../mqtt/mqtt_topics';
 import { ChartComponent } from "../chart/chart.component";
 import { CommonModule } from '@angular/common';
 import { StringToNumberPipe } from "../../helpers/numberConvert.pipe";
+import { DeviceLocationComponent } from '../embeded-device/device-location/device-location.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [MatMenu, MatIcon, ChartComponent, CommonModule, StringToNumberPipe],
+  imports: [MatMenu, MatIcon, ChartComponent, CommonModule, StringToNumberPipe, DeviceLocationComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
