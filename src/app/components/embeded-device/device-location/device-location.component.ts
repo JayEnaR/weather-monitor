@@ -28,12 +28,12 @@ export class DeviceLocationComponent implements AfterViewInit {
   initMap(): void {
     this.map = L.map('map', {
       center: this.coordinates,
-      zoom: 18,
+      zoom: 19,
     });
     const tiles = L.tileLayer(
       'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
       {
-        maxZoom: 18,
+        maxZoom: 20,
         minZoom: 3,
         attribution: '',
       }
@@ -65,7 +65,7 @@ export class DeviceLocationComponent implements AfterViewInit {
          */
 console.log(this.coordinates);
 
-        this.map.setView(this.coordinates, 18);
+        this.map.setView(this.coordinates, 19);
         this.circle.setLatLng(this.coordinates);
       });
   }
