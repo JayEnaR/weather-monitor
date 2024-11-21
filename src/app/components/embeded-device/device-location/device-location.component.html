@@ -1,6 +1,6 @@
 <div class="flex items-center m-4">
   <div
-    [ngClass]="!hasCoordinates() ? 'hidden' : 'visible'" class=""
+    [ngClass]="!hasCoordinates() && isOnline ? 'hidden' : 'visible'" class=""
   >
     Last known location
   </div>
@@ -8,7 +8,7 @@
     mat-flat-button
     class="ml-auto"
     (click)="findDevice()"
-    [disabled]="!(_clientStatusService.status$ | async)"
+    [disabled]="!isOnline"
   >
     Find device
   </button>
