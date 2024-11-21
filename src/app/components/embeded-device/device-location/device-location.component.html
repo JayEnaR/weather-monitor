@@ -1,5 +1,17 @@
-<div class="flex justify-end m-4">
-    <button mat-flat-button (click)="findDevice()">Find device</button>
+<div class="flex items-center m-4">
+  <div
+    [ngClass]="!hasCoordinates() ? 'hidden' : 'visible'" class=""
+  >
+    Last known location
+  </div>
+  <button
+    mat-flat-button
+    class="ml-auto"
+    (click)="findDevice()"
+    [disabled]="!(_clientStatusService.status$ | async)"
+  >
+    Find device
+  </button>
 </div>
 
 <div id="map" class="h-96 w-full"></div>

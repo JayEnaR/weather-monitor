@@ -3,11 +3,13 @@ import { MqttService } from 'ngx-mqtt';
 import { MQTT_TOPCIS } from '../../../mqtt/mqtt_topics';
 import { MatButtonModule } from '@angular/material/button';
 import * as L from 'leaflet';
+import { ClientStatusService } from '../../../services/client-status.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-device-location',
   standalone: true,
-  imports: [MatButtonModule],
+  imports: [MatButtonModule, CommonModule],
   templateUrl: './device-location.component.html',
   styleUrl: './device-location.component.scss',
 })
@@ -16,7 +18,7 @@ export class DeviceLocationComponent implements AfterViewInit {
   private map: any;
   circle: any;
 
-  constructor(private _mqttService: MqttService) {
+  constructor(private _mqttService: MqttService, public _clientStatusService: ClientStatusService) {
     this.coordinates = { lat: 0, lng: 0 };
     this.initSubscriptions();
   }
@@ -58,13 +60,6 @@ export class DeviceLocationComponent implements AfterViewInit {
         this.coordinates.lat = +coord[0];
         this.coordinates.lng = +coord[1];
 
-        /**
-         * TODO:
-         * Use coordinates to display in map
-         * Update map when coordinates changes
-         */
-console.log(this.coordinates);
-
         this.map.setView(this.coordinates, 19);
         this.circle.setLatLng(this.coordinates);
       });
@@ -77,5 +72,10 @@ console.log(this.coordinates);
       .subscribe(() => {
         console.log('Finding device...');
       });
+  }
+
+  hasCoordinates(): boolean {
+    debugger
+    return this.coordinates.lat != 0 && this.coordinates.lng != 0;
   }
 }
