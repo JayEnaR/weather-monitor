@@ -1,17 +1,21 @@
-<div class="flex items-center m-4">
-  <div
-    [ngClass]="!hasCoordinates() && isOnline ? 'hidden' : 'visible'" class=""
-  >
+<div class="relative h-full overflow-">
+
+  <div class="flex items-center mx-4 h-20 ">
+    <div
+    [ngClass]="hasCoordinates() && !isOnline ? 'visible' : 'hidden'" class=""
+    >
     Last known location
   </div>
   <button
-    mat-flat-button
-    class="ml-auto"
-    (click)="findDevice()"
-    [disabled]="!isOnline"
+  mat-flat-button
+  class="ml-auto"
+  (click)="findDevice()"
+  [disabled]="!isOnline"
   >
-    Find device
-  </button>
+  Find device
+</button>
 </div>
 
-<div id="map" class="h-96 w-full"></div>
+<div id="map" class="absolute top-20 bottom-0 left-0 right-0 w-full"></div>
+
+</div>

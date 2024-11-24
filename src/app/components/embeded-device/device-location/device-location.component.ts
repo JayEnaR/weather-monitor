@@ -61,7 +61,8 @@ export class DeviceLocationComponent implements AfterViewInit, OnDestroy {
       .subscribe((res) => {
 
         const coord = res.payload.toString().split(',');
-
+ console.log(coord);
+ 
         this.coordinates.lat = +coord[0];
         this.coordinates.lng = +coord[1];
 
