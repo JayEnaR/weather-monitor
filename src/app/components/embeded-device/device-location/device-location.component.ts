@@ -21,17 +21,27 @@ export class DeviceLocationComponent implements AfterViewInit, OnDestroy {
   isOnline: boolean = false;
   unsub$: Subject<void> = new Subject<void>();
 
-  constructor(private _mqttService: MqttService, public _clientStatusService: ClientStatusService) {
+  constructor(
+    private _mqttService: MqttService,
+    public _clientStatusService: ClientStatusService
+  ) {
     this.coordinates = { lat: 0, lng: 0 };
     this.initSubscriptions();
-    this._clientStatusService.status$.pipe(takeUntil(this.unsub$)).subscribe(stat => this.isOnline = stat);
+    this._clientStatusService.status$
+      .pipe(takeUntil(this.unsub$))
+      .subscribe((stat) => {
+        this.isOnline = stat;
+        if(stat && !this.hasCoordinates){
+          this.findDevice();
+        }
+      });
   }
 
   ngAfterViewInit(): void {
     this.initMap();
   }
 
-  initMap(): void {
+  private initMap(): void {
     this.map = L.map('map', {
       center: this.coordinates,
       zoom: 19,
@@ -55,14 +65,13 @@ export class DeviceLocationComponent implements AfterViewInit, OnDestroy {
     this.circle.addTo(this.map);
   }
 
-  initSubscriptions(): void {
+  private initSubscriptions(): void {
     this._mqttService
       .observeRetained(MQTT_TOPCIS.coordinates, { qos: 1 })
       .subscribe((res) => {
-
         const coord = res.payload.toString().split(',');
- console.log(coord);
- 
+        console.log(coord);
+
         this.coordinates.lat = +coord[0];
         this.coordinates.lng = +coord[1];
 
@@ -71,7 +80,7 @@ export class DeviceLocationComponent implements AfterViewInit, OnDestroy {
       });
   }
 
-  findDevice(): void {
+  private findDevice(): void {
     // TODO: Temp and humid go to zero after find device is called
     this._mqttService
       .publish(MQTT_TOPCIS.findDevice, 'find_device', { qos: 1, retain: false })
@@ -80,7 +89,7 @@ export class DeviceLocationComponent implements AfterViewInit, OnDestroy {
       });
   }
 
-  hasCoordinates(): boolean {
+  private hasCoordinates(): boolean {
     return this.coordinates.lat != 0 && this.coordinates.lng != 0;
   }
 
