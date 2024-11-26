@@ -26,12 +26,12 @@ export class DeviceLocationComponent implements AfterViewInit, OnDestroy {
     public _clientStatusService: ClientStatusService
   ) {
     this.coordinates = { lat: 0, lng: 0 };
-    this.initSubscriptions();
+
     this._clientStatusService.status$
       .pipe(takeUntil(this.unsub$))
       .subscribe((stat) => {
         this.isOnline = stat;
-        if(stat && !this.hasCoordinates){
+        if (this.isOnline && !this.hasCoordinates) {
           this.findDevice();
         }
       });
@@ -39,6 +39,7 @@ export class DeviceLocationComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     this.initMap();
+    this.initSubscriptions();
   }
 
   private initMap(): void {
@@ -68,9 +69,9 @@ export class DeviceLocationComponent implements AfterViewInit, OnDestroy {
   private initSubscriptions(): void {
     this._mqttService
       .observeRetained(MQTT_TOPCIS.coordinates, { qos: 1 })
+      .pipe(takeUntil(this.unsub$))
       .subscribe((res) => {
         const coord = res.payload.toString().split(',');
-        console.log(coord);
 
         this.coordinates.lat = +coord[0];
         this.coordinates.lng = +coord[1];
@@ -93,8 +94,12 @@ export class DeviceLocationComponent implements AfterViewInit, OnDestroy {
     return this.coordinates.lat != 0 && this.coordinates.lng != 0;
   }
 
-  ngOnDestroy(): void {
+  private clearSubscriptions(): void{
     this.unsub$.next();
     this.unsub$.complete();
+  }
+
+  ngOnDestroy(): void {
+    this.clearSubscriptions();
   }
 }

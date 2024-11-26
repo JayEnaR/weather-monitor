@@ -34,7 +34,7 @@ export class AppComponent {
     this._matIconReg.setDefaultFontSetClass('material-symbols-outlined');
     this._clientStatusService.status$.subscribe((res) => (this.online = res));
     this._mqttService
-      .observeRetained(MQTT_TOPCIS.connectionStatus, { qos: 1, rap: false })
+      .observeRetained(MQTT_TOPCIS.connectionStatus, { qos: 1 })
       .subscribe((status) => {
         const statusResponse = status.payload.toString();
         const isOnline: boolean = statusResponse
