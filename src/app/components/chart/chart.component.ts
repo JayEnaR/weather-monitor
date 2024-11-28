@@ -36,7 +36,7 @@ export class ChartComponent implements OnChanges {
       ],
       chart: { type: 'area' },
       xaxis: {},
-      title: { text: 'Fluctuation' },
+      title: { text: 'Fluctuation', style: { fontSize: '18px', fontFamily: 'Roboto', fontWeight: '500' } },
       colors: ['#3b82f6', '#f59e0b'],
     };
   }
