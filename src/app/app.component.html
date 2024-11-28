@@ -5,14 +5,14 @@
     <a routerLink="/" class="">
       <img class="h-14" src="logos/logo.svg" alt="Logo" />
     </a>
-    <div class="ml-auto flex items-center space-x-0.5 pl-2 sm:space-x-4">
+    <div class="ml-auto flex items-center space-x-0.5 pl-2 space-x-4 sm:space-x-6">
       <button mat-icon-button [routerLink]="['/']">
         <mat-icon>team_dashboard</mat-icon>
       </button>
       <button mat-icon-button [routerLink]="['find-device']">
         <mat-icon>location_on</mat-icon>
       </button>
-      <ng-container *ngIf="_clientStatusService.status$ | async; else offline">
+      <ng-container *ngIf="online; else offline">
         <button mat-icon-button>
           <mat-icon class="text-green-600">cloud_done</mat-icon>
         </button>
