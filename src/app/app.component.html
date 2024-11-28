@@ -1,35 +1,32 @@
 <div class="flex flex-col h-screen">
-
-    <div class="bg-card relative border z-49 flex h-20 w-full flex-0 items-center px-4 md:px-6 print:hidden ">
-        <a routerLink="/" class="">
-            <img class="h-14" src="logos/logo.svg" alt="Logo">
-        </a>
-        <div class="ml-auto flex items-center space-x-0.5 pl-2 sm:space-x-4">
-            <ng-container *ngIf="_clientStatusService.status$ | async; else offline">
-                <button mat-icon-button [matMenuTriggerFor]="menu" >
-                    <mat-icon>cloud_done</mat-icon>
-                </button>
-            </ng-container>
-            <mat-menu [xPosition]="'before'" #menu="matMenu">
-                <ng-container >
-                    <button mat-menu-item [routerLink]="['find-device']">
-                        <span class="flex flex-col leading-none">
-                            <span>Device location</span>
-                        </span>
-                    </button>
-                </ng-container>
-            </mat-menu>
-        </div>
+  <div
+    class="bg-card relative border z-49 flex h-20 w-full flex-0 items-center px-4 md:px-6 print:hidden"
+  >
+    <a routerLink="/" class="">
+      <img class="h-14" src="logos/logo.svg" alt="Logo" />
+    </a>
+    <div class="ml-auto flex items-center space-x-0.5 pl-2 sm:space-x-4">
+      <button mat-icon-button [routerLink]="['/']">
+        <mat-icon>team_dashboard</mat-icon>
+      </button>
+      <button mat-icon-button [routerLink]="['find-device']">
+        <mat-icon>location_on</mat-icon>
+      </button>
+      <ng-container *ngIf="_clientStatusService.status$ | async; else offline">
+        <button mat-icon-button>
+          <mat-icon class="text-green-600">cloud_done</mat-icon>
+        </button>
+      </ng-container>
     </div>
+  </div>
 
-    
-    <div class="flex-1 overflow-y-auto">
-        <router-outlet />
-    </div>
+  <div class="flex-1 overflow-y-auto">
+    <router-outlet />
+  </div>
 </div>
 
 <ng-template #offline>
-    <button mat-icon-button [matMenuTriggerFor]="menu">
-        <mat-icon>cloud_off</mat-icon>
-    </button>
+  <button mat-icon-button>
+    <mat-icon class="text-red-600">cloud_off</mat-icon>
+  </button>
 </ng-template>
