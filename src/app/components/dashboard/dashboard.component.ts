@@ -22,6 +22,8 @@ export class DashboardComponent implements OnDestroy {
   prevHumMsgId: number = 0;
   prevTempMsgId: number = 0;
   $unsub: Subject<void> = new Subject<void>();
+  temperatureUpdates: number = 0;
+  humidityUpdates: number = 0;
 
   constructor(
     private _mqttService: MqttService,
@@ -44,6 +46,7 @@ export class DashboardComponent implements OnDestroy {
             if (!t.dup && t.messageId != this.prevTempMsgId) {
               this.temperature = t.payload.toString();
               this.prevTempMsgId = t.messageId!;
+              this.temperatureUpdates ++;
             }
           });
         // Humidity
@@ -53,6 +56,7 @@ export class DashboardComponent implements OnDestroy {
             if (!h.dup && h.messageId != this.prevHumMsgId) {
               this.humidity = h.payload.toString();
               this.prevHumMsgId = h.messageId!;
+              this.humidityUpdates ++;
             }
           });
       }
