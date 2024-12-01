@@ -1,3 +1,24 @@
-<div class="relative h-full overflow-">
-  <div id="map" class="absolute top-0 bottom-0 left-0 right-0 w-full"></div>
+<div class="relative h-full">
+  <div class="absolute bottom-10 right-8 sm:top-10 z-50">
+    <button mat-fab extended (click)="locateDevice()">
+      <span class="flex justify-center items-center gap-2">
+        @if(locatingDevice){
+        <mat-progress-spinner
+          [diameter]="24"
+          [mode]="'indeterminate'"
+        ></mat-progress-spinner>
+        } @else{
+        <mat-icon>pin_drop</mat-icon>
+        }
+        <ng-container *ngIf="!locatingDevice; else locating">
+          <span>Locate</span>
+        </ng-container>
+      </span>
+    </button>
+  </div>
+  <div id="map" class="absolute top-0 bottom-0 left-0 right-0 w-full z-0"></div>
 </div>
+
+<ng-template #locating>
+  <span>GPS</span>
+</ng-template>
