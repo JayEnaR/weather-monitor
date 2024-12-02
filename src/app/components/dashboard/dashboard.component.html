@@ -6,8 +6,9 @@
       class="bg-card flex flex-auto flex-col overflow-hidden rounded-2xl p-6 shadow"
     >
       <div class="flex items-start justify-between">
-        <div class="truncate text-lg font-medium leading-6 tracking-tight">
-          Temperature
+        <div class="flex items-center gap-2 truncate text-lg font-medium leading-6 tracking-tight">
+          <span> Temperature </span>
+          <!-- <mat-icon>device_thermostat</mat-icon> -->
         </div>
         <div class="-mr-3 -mt-2 ml-2">
           <button
@@ -55,7 +56,7 @@
       </div>
       <div class="mt-2 flex flex-col items-center">
         <div
-          class="text-7xl font-bold leading-none tracking-tight text-blue-500 sm:text-8xl"
+          class="text-6xl font-bold leading-none tracking-tight text-blue-500 sm:text-7xl"
         >
           {{ temperature }}°
         </div>
@@ -63,10 +64,12 @@
           Celcius
         </div>
         <div
-          class="text-secondary mt-5 flex w-full items-baseline justify-center"
+          class="text-gray-500 mt-5 flex w-full items-baseline justify-center"
         >
           <div class="truncate text-md font-medium">Updates:</div>
-          <div class="ml-1.5 text-lg font-semibold">{{temperatureUpdates}}</div>
+          <div class="ml-1.5 text-lg font-semibold">
+            {{ temperatureUpdates }}
+          </div>
         </div>
       </div>
     </div>
@@ -74,8 +77,11 @@
       class="bg-card flex flex-auto flex-col overflow-hidden rounded-2xl p-6 shadow"
     >
       <div class="flex items-start justify-between">
-        <div class="truncate text-lg font-medium leading-6 tracking-tight">
-          Humidity
+        <div
+          class="flex items-center gap-2 truncate text-lg font-medium leading-6 tracking-tight"
+        >
+          <span>Humidity</span>
+          <!-- <mat-icon>humidity_mid</mat-icon> -->
         </div>
         <div class="-mr-3 -mt-2 ml-2">
           <button
@@ -123,7 +129,7 @@
       </div>
       <div class="mt-2 flex flex-col items-center">
         <div
-          class="text-7xl font-bold leading-none tracking-tight text-amber-500 sm:text-8xl"
+          class="text-6xl font-bold leading-none tracking-tight text-amber-500 sm:text-7xl"
         >
           {{ humidity }}%
         </div>
@@ -131,17 +137,17 @@
           Percentage
         </div>
         <div
-          class="text-secondary mt-5 flex w-full items-baseline justify-center"
+          class="text-gray-500 mt-5 flex w-full items-baseline justify-center"
         >
           <div class="truncate text-md font-medium">Updates:</div>
-          <div class="ml-1.5 text-lg font-semibold">{{humidityUpdates}}</div>
+          <div class="ml-1.5 text-lg font-semibold">{{ humidityUpdates }}</div>
         </div>
       </div>
     </div>
-<div >
-  <!-- Weather widget -->
-   <app-weather></app-weather>
-</div>
+    <div>
+      <!-- Weather widget -->
+      <app-weather></app-weather>
+    </div>
     <div
       class="bg-card flex flex-auto flex-col overflow-hidden rounded-2xl shadow sm:col-span-2 sm:p-4"
     >

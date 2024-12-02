@@ -1,11 +1,12 @@
 import { Component, OnDestroy } from '@angular/core';
 import { MqttService } from 'ngx-mqtt';
 import { WeatherService } from '../../services/weather.service';
-import { Subject, takeUntil } from 'rxjs';
+import { dematerialize, Subject, takeUntil } from 'rxjs';
 import { MQTT_TOPCIS } from '../../mqtt/mqtt_topics';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenu } from '@angular/material/menu';
 import { IWeatherResponse } from '../../models/weather-response.model';
+import { DecimalRound } from "../../helpers/decimalRound";
 
 @Component({
   selector: 'app-weather',
@@ -16,8 +17,12 @@ import { IWeatherResponse } from '../../models/weather-response.model';
 })
 export class WeatherComponent implements OnDestroy {
   $unsubStatus: Subject<void> = new Subject<void>();
-  // TODO: We might not have coordinates here. Create default data with zero values 
-  weather: IWeatherResponse = {} as IWeatherResponse;
+  weather: IWeatherResponse = {
+    main:{
+      temp: 0,
+      humidity: 0
+    }
+  } as IWeatherResponse;
 
   constructor(
     private _mqttService: MqttService,
@@ -33,10 +38,15 @@ export class WeatherComponent implements OnDestroy {
       .subscribe((res) => {
         const coord = res.payload.toString().split(',');
         if (coord[0] && coord[1]) {
-          // TODO: Call weather api
+          // Weather api
           this._weatherService
             .getWeather(coord[0], coord[1])
             .subscribe((res) => {
+              res.main = {
+                ...res.main,
+                temp: DecimalRound.roundNum(res.main.temp, 1),
+                humidity: DecimalRound.roundNum(res.main.humidity, 1),
+              }
               console.log(res);
               this.weather = res;
             });
