@@ -8,12 +8,12 @@ import { ChartComponent } from '../chart/chart.component';
 import { CommonModule } from '@angular/common';
 import { StringToNumberPipe } from '../../helpers/numberConvert.pipe';
 import { Subject, takeUntil } from 'rxjs';
-import { WeatherService } from '../../services/weather.service';
+import { WeatherComponent } from '../weather/weather.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [MatMenu, MatIcon, ChartComponent, CommonModule, StringToNumberPipe],
+  imports: [MatMenu, MatIcon, ChartComponent, CommonModule, StringToNumberPipe, WeatherComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
@@ -29,11 +29,8 @@ export class DashboardComponent implements OnDestroy {
 
   constructor(
     private _mqttService: MqttService,
-    private _clientStatusService: ClientStatusService,
-    private _weatherService: WeatherService
-  ) {
+    private _clientStatusService: ClientStatusService) {
     this.initMqtt();
-    this.getGpsCoordinates();
   }
 
   initMqtt(): void {
@@ -71,22 +68,6 @@ export class DashboardComponent implements OnDestroy {
           });
       }
     });
-  }
-
-  private getGpsCoordinates(): void {
-    this._mqttService
-      .observeRetained(MQTT_TOPCIS.coordinates, { qos: 1 })
-      .pipe(takeUntil(this.$unsubStatus))
-      .subscribe((res) => {
-        const coord = res.payload.toString().split(',');
-        if(coord[0] && coord[1]){
-          // TODO: Call weather api
-          this._weatherService.getWeather(coord[0], coord[1]).subscribe(res => {
-console.log(res);
-
-          });
-        }
-      });
   }
 
   ngOnDestroy(): void {
