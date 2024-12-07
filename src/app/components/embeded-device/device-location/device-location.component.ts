@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import * as L from 'leaflet';
 import { ClientStatusService } from '../../../services/client-status.service';
 import { CommonModule } from '@angular/common';
-import { BehaviorSubject, of, Subject, switchMap, take, takeUntil } from 'rxjs';
+import { Subject,takeUntil } from 'rxjs';
 import { MatIcon } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { GpsService } from '../../../services/gps.service';
@@ -75,6 +75,7 @@ export class DeviceLocationComponent implements AfterViewInit, OnDestroy {
   }
 
   private initSubscriptions(): void {
+
     // GSP search state
     this._gspService.$gpsSearching.subscribe((searching) => {
       this.locatingDevice = searching;
@@ -82,13 +83,11 @@ export class DeviceLocationComponent implements AfterViewInit, OnDestroy {
 
     this._mqttService
       .observeRetained(MQTT_TOPCIS.coordinates, { qos: 1 })
-      .pipe(takeUntil(this.$unsub))
       .subscribe((res) => {
         const coord = res.payload.toString().split(',');
 
         this.coordinates.lat = +coord[0];
         this.coordinates.lng = +coord[1];
-
         this.circle.setLatLng(this.coordinates);
 
         // Search result directly from client (state management)
@@ -97,7 +96,10 @@ export class DeviceLocationComponent implements AfterViewInit, OnDestroy {
           this.map.setView(this.coordinates, 19);
         } else if (res.retain && this.locatingDevice) {
           this.map.setView(this.coordinates, 16);
-        } else if (res.retain && !this.locatingDevice) {
+        } else if (
+          (res.retain && !this.locatingDevice) ||
+          (!res.retain && !this.locatingDevice)
+        ) {
           this.map.setView(this.coordinates, 19);
         }
       });
