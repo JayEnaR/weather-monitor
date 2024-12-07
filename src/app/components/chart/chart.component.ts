@@ -82,6 +82,7 @@ export class ChartComponent implements OnChanges {
         this.tempArr.shift();
         this.humidArr.shift();
       }
+      
       this.chartOptions.series = [
         { data: this.tempArr, name: "Temp" },
         { data: this.humidArr, name: "Humid" }, 
