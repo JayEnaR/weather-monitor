@@ -79,6 +79,7 @@ export class DeviceLocationComponent implements AfterViewInit, OnDestroy {
     // GSP search state
     this._gspService.$gpsSearching.subscribe((searching) => {
       this.locatingDevice = searching;
+      console.log('hit0');
     });
 
     this._mqttService
@@ -94,12 +95,18 @@ export class DeviceLocationComponent implements AfterViewInit, OnDestroy {
         if (!res.retain && this.locatingDevice) {
           this._gspService.$gpsSearching.next(false);
           this.map.setView(this.coordinates, 19);
+          console.log('hit1');
+
         } else if (res.retain && this.locatingDevice) {
+          console.log('hit2');
+          
           this.map.setView(this.coordinates, 16);
         } else if (
           (res.retain && !this.locatingDevice) ||
           (!res.retain && !this.locatingDevice)
         ) {
+          console.log('hit3');
+
           this.map.setView(this.coordinates, 19);
         }
       });
