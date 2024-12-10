@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import * as L from 'leaflet';
 import { ClientStatusService } from '../../../services/client-status.service';
 import { CommonModule } from '@angular/common';
-import { Subject,takeUntil } from 'rxjs';
+import { Subject,take,takeUntil } from 'rxjs';
 import { MatIcon } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { GpsService } from '../../../services/gps.service';
@@ -77,13 +77,14 @@ export class DeviceLocationComponent implements AfterViewInit, OnDestroy {
   private initSubscriptions(): void {
 
     // GSP search state
-    this._gspService.$gpsSearching.subscribe((searching) => {
+    this._gspService.$gpsSearching.pipe(takeUntil(this.$unsub)).subscribe((searching) => {
       this.locatingDevice = searching;
       console.log('hit0');
     });
 
     this._mqttService
       .observeRetained(MQTT_TOPCIS.coordinates, { qos: 1 })
+      .pipe(takeUntil(this.$unsub))
       .subscribe((res) => {
         const coord = res.payload.toString().split(',');
 
@@ -91,6 +92,8 @@ export class DeviceLocationComponent implements AfterViewInit, OnDestroy {
         this.coordinates.lng = +coord[1];
         this.circle.setLatLng(this.coordinates);
 
+        console.log("searching ", this.locatingDevice);
+        
         // Search result directly from client (state management)
         if (!res.retain && this.locatingDevice) {
           this._gspService.$gpsSearching.next(false);
