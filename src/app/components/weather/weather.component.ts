@@ -7,6 +7,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatMenu } from '@angular/material/menu';
 import { IWeatherResponse } from '../../models/weather-response.model';
 import { DecimalRound } from "../../helpers/decimalRound";
+import { GpsService } from '../../services/gps.service';
 
 @Component({
   selector: 'app-weather',
@@ -26,14 +27,14 @@ export class WeatherComponent implements OnDestroy {
 
   constructor(
     private _mqttService: MqttService,
-    private _weatherService: WeatherService
+    private _weatherService: WeatherService,
+    private _gpsService: GpsService
   ) {
     this.getGpsCoordinates();
   }
 
   private getGpsCoordinates(): void {
-    this._mqttService
-      .observeRetained(MQTT_TOPCIS.coordinates, { qos: 1 })
+    this._gpsService.getGpsCoordinates()
       .pipe(takeUntil(this.$unsubStatus))
       .subscribe((res) => {
         const coord = res.payload.toString().split(',');
@@ -47,7 +48,6 @@ export class WeatherComponent implements OnDestroy {
                 temp: DecimalRound.roundNum(res.main.temp, 1),
                 humidity: DecimalRound.roundNum(res.main.humidity, 1),
               }
-              console.log(res);
               this.weather = res;
             });
         }

@@ -84,8 +84,8 @@ export class ChartComponent implements OnChanges {
       }
       
       this.chartOptions.series = [
-        { data: this.tempArr, name: "Temp" },
-        { data: this.humidArr, name: "Humid" }, 
+        { data: this.tempArr, name: "Temperature" },
+        { data: this.humidArr, name: "Humidity" }, 
       ];
 
       this.chartOptions.xaxis!.categories = this.seriesArr

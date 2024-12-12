@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import * as L from 'leaflet';
 import { ClientStatusService } from '../../../services/client-status.service';
 import { CommonModule } from '@angular/common';
-import { Subject,take,takeUntil } from 'rxjs';
+import { Subject, take, takeUntil } from 'rxjs';
 import { MatIcon } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { GpsService } from '../../../services/gps.service';
@@ -63,7 +63,6 @@ export class DeviceLocationComponent implements AfterViewInit, OnDestroy {
         attribution: '',
       }
     );
-
     tiles.addTo(this.map);
     this.circle = L.circle(this.coordinates, {
       color: 'red',
@@ -75,15 +74,15 @@ export class DeviceLocationComponent implements AfterViewInit, OnDestroy {
   }
 
   private initSubscriptions(): void {
-
     // GSP search state
-    this._gspService.$gpsSearching.pipe(takeUntil(this.$unsub)).subscribe((searching) => {
-      this.locatingDevice = searching;
-      console.log('hit0');
-    });
+    this._gspService.isGpsSearching$
+      .subscribe((searching) => {
+        this.locatingDevice = searching;
+        console.log('searching ', this.locatingDevice);
+      });
 
-    this._mqttService
-      .observeRetained(MQTT_TOPCIS.coordinates, { qos: 1 })
+    this._gspService
+      .getGpsCoordinates()
       .pipe(takeUntil(this.$unsub))
       .subscribe((res) => {
         const coord = res.payload.toString().split(',');
@@ -92,24 +91,19 @@ export class DeviceLocationComponent implements AfterViewInit, OnDestroy {
         this.coordinates.lng = +coord[1];
         this.circle.setLatLng(this.coordinates);
 
-        console.log("searching ", this.locatingDevice);
-        
-        // Search result directly from client (state management)
-        if (!res.retain && this.locatingDevice) {
-          this._gspService.$gpsSearching.next(false);
-          this.map.setView(this.coordinates, 19);
-          console.log('hit1');
-
-        } else if (res.retain && this.locatingDevice) {
+        if (
+          (res.retain && this.locatingDevice) ||
+          (!res.retain && this.locatingDevice)
+        ) {
+          // Old coordinates while wating for gps
           console.log('hit2');
-          
           this.map.setView(this.coordinates, 16);
         } else if (
           (res.retain && !this.locatingDevice) ||
           (!res.retain && !this.locatingDevice)
         ) {
+          // Old or new coordinates while NOT wating for gps
           console.log('hit3');
-
           this.map.setView(this.coordinates, 19);
         }
       });
@@ -125,13 +119,8 @@ export class DeviceLocationComponent implements AfterViewInit, OnDestroy {
   }
 
   locateDevice(): void {
-    // TODO: Temp and humid go to zero after find device is called
     this.map.setView(this.coordinates, 16);
-    // this.locatingDevice = true;
-    this._mqttService
-      .publish(MQTT_TOPCIS.findDevice, 'find_device')
-      .subscribe();
-    this._gspService.$gpsSearching.next(true);
+    this._gspService.locateDevice();
   }
 
   ngOnDestroy(): void {

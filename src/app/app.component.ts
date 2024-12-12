@@ -8,6 +8,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { RouterModule } from '@angular/router';
 import { MqttService } from 'ngx-mqtt';
 import { MQTT_TOPCIS } from './mqtt/mqtt_topics';
+import { GpsService } from './services/gps.service';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -29,6 +31,7 @@ export class AppComponent {
   constructor(
     private _matIconReg: MatIconRegistry,
     public _clientStatusService: ClientStatusService,
+    private _gspService: GpsService,
     private _mqttService: MqttService
   ) {
     this._matIconReg.setDefaultFontSetClass('material-symbols-outlined');
@@ -46,6 +49,19 @@ export class AppComponent {
           : false;
         console.log(`Online: ${isOnline} (${statusResponse})`);
         this._clientStatusService.updateStatus(isOnline);
+      });
+
+    this._mqttService
+      .observeRetained(MQTT_TOPCIS.coordinates, {
+        qos: 1,
+      })
+      .subscribe((res) => {
+        this._gspService.isGpsSearching$.pipe(take(1)).subscribe((s) => {
+          if (!res.retain && s) {
+            this._gspService.isGpsSearching$.next(false);
+          }
+          this._gspService.setGpsCoordinate(res);
+        });
       });
   }
 }
