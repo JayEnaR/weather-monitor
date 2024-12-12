@@ -1,9 +1,9 @@
 <div class="sm:p-6">
   <div
-    class="grid w-full min-w-0 grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3"
+    class="grid w-full min-w-0 grid-cols-4 gap-6"
   >
     <div
-      class="bg-card flex flex-auto flex-col overflow-hidden rounded-2xl p-6 shadow"
+      class="bg-card flex flex-auto flex-col overflow-hidden rounded-2xl p-6 shadow col-span-4 lg:col-span-1 md:col-span-2 sm:col-span-2"
     >
       <div class="flex items-start justify-between">
         <div class="flex items-center gap-2 truncate text-lg font-medium leading-6 tracking-tight">
@@ -74,7 +74,7 @@
       </div>
     </div>
     <div
-      class="bg-card flex flex-auto flex-col overflow-hidden rounded-2xl p-6 shadow"
+      class="bg-card flex flex-auto flex-col overflow-hidden rounded-2xl p-6 shadow col-span-4 lg:col-span-1 md:col-span-2 sm:col-span-2"
     >
       <div class="flex items-start justify-between">
         <div
@@ -144,12 +144,12 @@
         </div>
       </div>
     </div>
-    <div>
+    <div class="col-span-4 lg:col-span-2 md:col-span-4">
       <!-- Weather widget -->
       <app-weather></app-weather>
     </div>
     <div
-      class="bg-card flex flex-auto flex-col overflow-hidden rounded-2xl shadow sm:col-span-2 sm:p-4"
+      class="bg-card flex flex-auto flex-col overflow-hidden rounded-2xl shadow col-span-4"
     >
       <app-chart
         [temperature]="temperature | stringToNumber"
