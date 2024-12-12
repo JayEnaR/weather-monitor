@@ -26,9 +26,12 @@ export class ChartComponent implements OnChanges {
 
   constructor() {
     this.chartOptions = {
-      series: [
-      ],
-      chart: { type: 'area' },
+      yaxis: {
+        tickAmount: 4,
+        stepSize: 0.5,
+      },
+      series: [],
+      chart: { type: 'area', height: '400px' },
       xaxis: {
         categories: [],
       },
@@ -44,14 +47,17 @@ export class ChartComponent implements OnChanges {
 
   getTime(): string {
     const now = new Date();
-    const formattedTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+    const formattedTime = `${now.getHours().toString().padStart(2, '0')}:${now
+      .getMinutes()
+      .toString()
+      .padStart(2, '0')}`;
     return formattedTime;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     const temp = changes['temperature'];
     const humid = changes['humidity'];
-    
+
     if (temp || humid) {
       const time = this.getTime();
 
@@ -63,19 +69,19 @@ export class ChartComponent implements OnChanges {
       this.humidArr.push(
         humid?.currentValue ?? this.humidArr[this.humidArr.length - 1]
       );
-      
+
       // We only want to see 15 intervals
       if (this.tempArr.length == this.chartSeriesIntervals + 1) {
         this.tempArr.shift();
         this.humidArr.shift();
       }
-      
+
       this.chartOptions.series = [
-        { data: this.tempArr, name: "Temperature" },
-        { data: this.humidArr, name: "Humidity" }, 
+        { data: this.tempArr, name: 'Temperature' },
+        { data: this.humidArr, name: 'Humidity' },
       ];
 
-      this.chartOptions.xaxis!.categories = this.seriesArr
+      this.chartOptions.xaxis!.categories = this.seriesArr;
     }
   }
 }
