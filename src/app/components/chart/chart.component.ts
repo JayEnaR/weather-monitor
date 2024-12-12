@@ -27,27 +27,14 @@ export class ChartComponent implements OnChanges {
   constructor() {
     this.chartOptions = {
       series: [
-        {
-          name: 'Temp',
-          data: [1,2,3,4,5,6,7,8,9]
-        },
-        {
-          name: 'Humi',
-          data: [1,2,3,4,5,6,7,8,9]
-        },
       ],
       chart: { type: 'area' },
-      legend: {
-        
-        formatter: (seriesName: string, opts: any) => {
-          // Modify the legend label text here
-          return `Custom Label: ${seriesName}`;
-        },
-      },
       xaxis: {
         categories: [],
       },
       title: {
+        offsetX: 15,
+        offsetY: 10,
         text: 'Fluctuation',
         style: { fontSize: '18px', fontFamily: 'Roboto', fontWeight: '500' },
       },
