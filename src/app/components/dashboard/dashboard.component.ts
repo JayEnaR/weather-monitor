@@ -46,7 +46,7 @@ export class DashboardComponent implements OnDestroy {
       } else {
         // Temperature
         this._mqttService
-          .observeRetained(MQTT_TOPCIS.temperature, { qos: 1 })
+          .observe(MQTT_TOPCIS.temperature, { qos: 1 })
           .pipe(takeUntil(this.$unsub))
           .subscribe((t: IMqttMessage) => {
             if (!t.dup && t.messageId != this.prevTempMsgId) {
@@ -57,7 +57,7 @@ export class DashboardComponent implements OnDestroy {
           });
         // Humidity
         this._mqttService
-          .observeRetained(MQTT_TOPCIS.humidity, { qos: 1 })
+          .observe(MQTT_TOPCIS.humidity, { qos: 1 })
           .pipe(takeUntil(this.$unsub))
           .subscribe((h: IMqttMessage) => {
             if (!h.dup && h.messageId != this.prevHumMsgId) {

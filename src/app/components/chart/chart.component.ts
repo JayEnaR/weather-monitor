@@ -28,7 +28,6 @@ export class ChartComponent implements OnChanges {
     this.chartOptions = {
       yaxis: {
         tickAmount: 4,
-        stepSize: 0.5,
       },
       series: [],
       chart: { type: 'area', height: '400px' },
