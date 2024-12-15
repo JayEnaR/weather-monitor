@@ -21,6 +21,7 @@
     "@angular/platform-browser-dynamic": "^18.2.0",
     "@angular/router": "^18.2.0",
     "apexcharts": "^3.54.1",
+    "dexie": "^4.0.10",
     "leaflet": "^1.9.4",
     "ng-apexcharts": "^1.12.0",
     "ngx-mqtt": "^17.0.0",
