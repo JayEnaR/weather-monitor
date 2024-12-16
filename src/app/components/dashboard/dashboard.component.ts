@@ -11,6 +11,7 @@ import { combineLatest, from, Observable, of, Subject, takeUntil } from 'rxjs';
 import { WeatherComponent } from '../weather/weather.component';
 import { IndexedDbService } from '../../services/indexed-db.service';
 import { ConfigService } from '../../services/config.service';
+import { ITempHumidModel } from '../../models/ITempHumid.model';
 
 @Component({
   selector: 'app-dashboard',
@@ -27,8 +28,6 @@ import { ConfigService } from '../../services/config.service';
   styleUrl: './dashboard.component.scss',
 })
 export class DashboardComponent implements OnDestroy, OnInit {
-  humidity: string = '0';
-  temperature: string = '0';
   prevHumMsgId: number = 0;
   prevTempMsgId: number = 0;
   $unsub: Subject<void> = new Subject<void>();
@@ -36,6 +35,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
   temperatureUpdates: number = 0;
   humidityUpdates: number = 0;
   intervals: number;
+  tempHumid: ITempHumidModel[] = [];
 
   constructor(
     private _mqttService: MqttService,
@@ -47,8 +47,8 @@ export class DashboardComponent implements OnDestroy, OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    this._indexeDbService.getAllItems().then(res=> {
-console.table(res)
+    this._indexeDbService.getAllItems().then((res) => {
+      this.tempHumid = res;
     });
     this.initMqtt();
     this._indexeDbService.removeFirst();
@@ -60,8 +60,7 @@ console.table(res)
       .pipe(takeUntil(this.$unsubStatus))
       .subscribe((status) => {
         if (!status) {
-          this.humidity = '0';
-          this.temperature = '0';
+          this.tempHumid = [];
           this.$unsub.next();
           this.$unsub.complete();
         } else {
@@ -71,29 +70,31 @@ console.table(res)
           ])
             .pipe(takeUntil(this.$unsub))
             .subscribe(([t, h]) => {
+              const obj: ITempHumidModel = {
+                id: (t.messageId! + h.messageId!).toString(),
+                temperature: '0',
+                humidity: '0',
+              };
+
               if (!t.dup && t.messageId != this.prevTempMsgId) {
-                this.temperature = t.payload.toString();
+                this.tempHumid;
+                obj.temperature = t.payload.toString();
                 this.prevTempMsgId = t.messageId!;
                 this.temperatureUpdates++;
               }
               if (!h.dup && h.messageId != this.prevHumMsgId) {
-                this.humidity = h.payload.toString();
+                obj.humidity = h.payload.toString();
                 this.prevHumMsgId = h.messageId!;
                 this.humidityUpdates++;
               }
-
               // Get the indexedDb row count
-              this._indexeDbService.getRowCount().then((c ) => {
+              this._indexeDbService.getRowCount().then((c) => {
                 // Only hold x amount of items
                 if (c == this.intervals) {
                   // Delete oldest
                   this._indexeDbService.removeFirst();
                 }
-                this._indexeDbService.add({
-                  id: (t.messageId! + h.messageId!).toString(),
-                  temperature: this.temperature,
-                  humidity: this.humidity,
-                });
+                this._indexeDbService.add(obj);
               });
             });
         }
