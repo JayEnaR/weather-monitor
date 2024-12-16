@@ -22,13 +22,13 @@ export class IndexedDbService extends Dexie {
     this.tableCtx.add(record, record.id);  
   }
 
-  getAllItems(): Promise<ITempHumidModel[]> {
+  getAllItems(): Observable<ITempHumidModel[]> {
     const collection = this.tableCtx.toCollection();
-    return collection.toArray();
+    return from(collection.toArray());
   }
 
-  getRowCount(): Promise<number> {
-    return this.tableCtx.count();
+  getRowCount(): Observable<number> {
+    return from(this.tableCtx.count());
   }
   
   removeFirst(): void {
