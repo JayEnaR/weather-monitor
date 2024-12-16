@@ -51,7 +51,7 @@ export class ChartComponent implements OnChanges {
       colors: ['#3b82f6', '#f59e0b'],
     };
 
-    this._indexeDbService.getAllItems().then((res) => {
+    this._indexeDbService.getAllItems().subscribe((res) => {
       // Translate this array to the 2 arrays that display temp and humid
       res.forEach((i) => {
         this.humidArr.push(i.humidity), this.tempArr.push(i.temperature);

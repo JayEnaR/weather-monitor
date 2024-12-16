@@ -1,0 +1,68 @@
+
+<div class="flex items-start justify-between">
+  <div
+    class="flex items-center gap-2 truncate text-lg font-medium leading-6 tracking-tight"
+  >
+    <span>Humidity</span>
+    <!-- <mat-icon>humidity_mid</mat-icon> -->
+  </div>
+  <div class="-mr-3 -mt-2 ml-2">
+    <button
+      mat-icon-button=""
+      class="mat-mdc-menu-trigger mdc-icon-button mat-mdc-icon-button mat-unthemed mat-mdc-button-base"
+      mat-ripple-loader-uninitialized=""
+      mat-ripple-loader-class-name="mat-mdc-button-ripple"
+      mat-ripple-loader-centered=""
+      ng-reflect-menu="[object Object]"
+      aria-haspopup="menu"
+      aria-expanded="false"
+    >
+      <span
+        class="mat-mdc-button-persistent-ripple mdc-icon-button__ripple"
+      ></span
+      ><mat-icon
+        role="img"
+        class="mat-icon notranslate icon-size-5 mat-icon-no-color"
+        aria-hidden="true"
+        ng-reflect-svg-icon="heroicons_mini:ellipsis-vertic"
+        data-mat-icon-type="svg"
+        data-mat-icon-name="ellipsis-vertical"
+        data-mat-icon-namespace="heroicons_mini"
+        ><svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+          aria-hidden="true"
+          fit=""
+          height="100%"
+          width="100%"
+          preserveAspectRatio="xMidYMid meet"
+          focusable="false"
+        >
+          <path
+            d="M10 3a1.5 1.5 0 110 3 1.5 1.5 0 010-3zM10 8.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3zM11.5 15.5a1.5 1.5 0 10-3 0 1.5 1.5 0 003 0z"
+          ></path></svg></mat-icon
+      ><span class="mat-mdc-focus-indicator"></span
+      ><span class="mat-mdc-button-touch-target"></span></button
+    ><!--container--><mat-menu
+      class="ng-tns-c1923052698-16 ng-star-inserted"
+      ><!--container--></mat-menu
+    >
+  </div>
+</div>
+<div class="mt-2 flex flex-col items-center">
+  <div
+    class="text-6xl font-bold leading-none tracking-tight text-amber-500 sm:text-7xl"
+  >
+    {{ tempHumidObj.humidity }}%
+  </div>
+  <div class="text-lg font-medium text-amber-600 dark:text-amber-500">
+    Percentage
+  </div>
+  <div
+    class="text-gray-500 mt-5 flex w-full items-baseline justify-center"
+  >
+    <div class="truncate text-md font-medium">Updates:</div>
+    <div class="ml-1.5 text-lg font-semibold">{{ humidityUpdates }}</div>
+  </div>
+</div>

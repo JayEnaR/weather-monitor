@@ -13,6 +13,8 @@ import { IndexedDbService } from '../../services/indexed-db.service';
 import { ConfigService } from '../../services/config.service';
 import { ITempHumidModel } from '../../models/ITempHumid.model';
 import { Time } from '../../helpers/time';
+import { HumidityComponent } from '../humidity/humidity.component';
+import { TemperatureComponent } from '../temperature/temperature.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -24,6 +26,8 @@ import { Time } from '../../helpers/time';
     CommonModule,
     StringToNumberPipe,
     WeatherComponent,
+    HumidityComponent,
+    TemperatureComponent
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
@@ -88,7 +92,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
                 this.humidityUpdates++;
               }
               // State management
-              this._indexeDbService.getRowCount().then((c) => {
+              this._indexeDbService.getRowCount().subscribe((c) => {
                 // Only hold x amount of items
                 if (c == this.intervals) {
                   // Delete oldest
