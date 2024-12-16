@@ -5,6 +5,7 @@ import {
   ApexAxisChartSeries,
   ApexNonAxisChartSeries,
 } from 'ng-apexcharts';
+import { ConfigService } from '../../services/config.service';
 
 @Component({
   selector: 'app-chart',
@@ -17,14 +18,16 @@ export class ChartComponent implements OnChanges {
   @Input() temperature: number = 0;
   @Input() humidity: number = 0;
 
-  private chartSeriesIntervals: number = 10;
+  private intervals: number ;
   private tempArr: number[] = [];
   private humidArr: number[] = [];
   private seriesArr: string[] = [];
 
   public chartOptions: ApexOptions;
 
-  constructor() {
+  constructor(private _configService: ConfigService) {
+    this.intervals = this._configService.config.chartSeriesIntervals;
+    
     this.chartOptions = {
       yaxis: {
         tickAmount: 4,
@@ -70,7 +73,7 @@ export class ChartComponent implements OnChanges {
       );
 
       // We only want to see 15 intervals
-      if (this.tempArr.length == this.chartSeriesIntervals + 1) {
+      if (this.tempArr.length == this.intervals + 1) {
         this.tempArr.shift();
         this.humidArr.shift();
       }

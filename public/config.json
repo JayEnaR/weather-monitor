@@ -1,3 +1,4 @@
 {
-    "weatherApiUrl": "https://api.openweathermap.org/data/2.5/weather"
+    "weatherApiUrl": "https://api.openweathermap.org/data/2.5/weather",
+    "chartSeriesIntervals": 8
 }
