@@ -33,8 +33,10 @@ export class IndexedDbService extends Dexie {
   
   removeFirst(): void {
     const collection = this.tableCtx.toCollection();
-    collection.last().then(last => {
-      this.tableCtx.delete(last!.id);
+    collection.first().then(first => {
+      this.tableCtx.delete(first!.id);
+      console.log('delete id ', first?.id);
+      
     });
   }
 

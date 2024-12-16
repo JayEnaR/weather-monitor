@@ -58,7 +58,7 @@
         <div
           class="text-6xl font-bold leading-none tracking-tight text-blue-500 sm:text-7xl"
         >
-          {{ temperature }}°
+          {{ tempHumidObj.temperature }}°
         </div>
         <div class="text-lg font-medium text-blue-600 dark:text-blue-500">
           Celcius
@@ -131,7 +131,7 @@
         <div
           class="text-6xl font-bold leading-none tracking-tight text-amber-500 sm:text-7xl"
         >
-          {{ humidity }}%
+          {{ tempHumidObj.humidity }}%
         </div>
         <div class="text-lg font-medium text-amber-600 dark:text-amber-500">
           Percentage
@@ -152,8 +152,8 @@
       class="bg-card flex flex-auto flex-col overflow-hidden rounded-2xl shadow col-span-4"
     >
       <app-chart
-        [temperature]="temperature | stringToNumber"
-        [humidity]="humidity | stringToNumber"
+        [temperature]="tempHumidObj.temperature"
+        [humidity]="tempHumidObj.humidity"
       ></app-chart>
     </div>
   </div>

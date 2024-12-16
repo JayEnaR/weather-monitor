@@ -12,6 +12,7 @@ import { WeatherComponent } from '../weather/weather.component';
 import { IndexedDbService } from '../../services/indexed-db.service';
 import { ConfigService } from '../../services/config.service';
 import { ITempHumidModel } from '../../models/ITempHumid.model';
+import { Time } from '../../helpers/time';
 
 @Component({
   selector: 'app-dashboard',
@@ -35,7 +36,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
   temperatureUpdates: number = 0;
   humidityUpdates: number = 0;
   intervals: number;
-  tempHumid: ITempHumidModel[] = [];
+  tempHumidObj: ITempHumidModel;
 
   constructor(
     private _mqttService: MqttService,
@@ -44,14 +45,14 @@ export class DashboardComponent implements OnDestroy, OnInit {
     private _configService: ConfigService
   ) {
     this.intervals = this._configService.config.chartSeriesIntervals;
+    this.tempHumidObj = this.initDefault();
+    console.log(this.tempHumidObj);
+    
   }
 
   async ngOnInit(): Promise<void> {
-    this._indexeDbService.getAllItems().then((res) => {
-      this.tempHumid = res;
-    });
     this.initMqtt();
-    this._indexeDbService.removeFirst();
+    // this._indexeDbService.removeFirst();
   }
 
   async initMqtt(): Promise<void> {
@@ -60,7 +61,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
       .pipe(takeUntil(this.$unsubStatus))
       .subscribe((status) => {
         if (!status) {
-          this.tempHumid = [];
+          this.tempHumidObj = this.initDefault();
           this.$unsub.next();
           this.$unsub.complete();
         } else {
@@ -70,35 +71,43 @@ export class DashboardComponent implements OnDestroy, OnInit {
           ])
             .pipe(takeUntil(this.$unsub))
             .subscribe(([t, h]) => {
-              const obj: ITempHumidModel = {
-                id: (t.messageId! + h.messageId!).toString(),
-                temperature: '0',
-                humidity: '0',
-              };
-
+              
+              this.tempHumidObj = {
+                ...this.tempHumidObj,
+                time: Time.getTime(),
+                id: (t.messageId! + h.messageId!).toString()
+              }
               if (!t.dup && t.messageId != this.prevTempMsgId) {
-                this.tempHumid;
-                obj.temperature = t.payload.toString();
+                this.tempHumidObj.temperature = +t.payload;
                 this.prevTempMsgId = t.messageId!;
                 this.temperatureUpdates++;
               }
               if (!h.dup && h.messageId != this.prevHumMsgId) {
-                obj.humidity = h.payload.toString();
+                this.tempHumidObj.humidity = +h.payload;
                 this.prevHumMsgId = h.messageId!;
                 this.humidityUpdates++;
               }
-              // Get the indexedDb row count
+              // State management
               this._indexeDbService.getRowCount().then((c) => {
                 // Only hold x amount of items
                 if (c == this.intervals) {
                   // Delete oldest
                   this._indexeDbService.removeFirst();
                 }
-                this._indexeDbService.add(obj);
+                this._indexeDbService.add(this.tempHumidObj);
               });
             });
         }
       });
+  }
+
+  initDefault(): ITempHumidModel {
+    return {
+      id: '',
+      humidity: 0,
+      temperature: 0,
+      time: ''
+    }
   }
 
   ngOnDestroy(): void {
