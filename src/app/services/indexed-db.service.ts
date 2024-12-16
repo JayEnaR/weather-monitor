@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import Dexie from 'dexie';
 import { liveQuery } from 'dexie';
 import { ITempHumidModel } from '../models/ITempHumid.model';
-import { first } from 'rxjs';
+import { first, from, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -36,8 +36,14 @@ export class IndexedDbService extends Dexie {
     collection.first().then(first => {
       this.tableCtx.delete(first!.id);
       console.log('delete id ', first?.id);
-      
     });
+  }
+
+  getLatest(): Observable<ITempHumidModel> {
+    const collection = this.tableCtx.toCollection();
+    return from(collection.last().then(last => {
+      return last!;
+    }));
   }
 
 }
