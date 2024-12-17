@@ -5,6 +5,8 @@ import { MatMenu } from '@angular/material/menu';
 import { ITempHumidModel } from '../../models/ITempHumid.model';
 import { TempHumidService } from '../../services/temp-humid.service';
 import { IndexedDbService } from '../../services/indexed-db.service';
+import { ClientStatusService } from '../../services/client-status.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-humidity',
@@ -21,18 +23,26 @@ export class HumidityComponent {
     time: '',
   };
   humidityUpdates: number = 0;
+  $unsub: Subject<void> = new Subject<void>();
 
   constructor(
     private _tempHumidService: TempHumidService,
-    private _indexedDbservice: IndexedDbService
+    private _indexedDbservice: IndexedDbService,
+    private _clientStatusService: ClientStatusService
   ) {
     this._indexedDbservice.getLatest().subscribe((latest) => {
       this.tempHumidObj = latest;
     });
 
-    this._tempHumidService.$tempHumid.subscribe((res) => {
-      this.tempHumidObj = res;
-      this.humidityUpdates += 1;
-    });
+    this._clientStatusService.status$
+      .pipe(takeUntil(this.$unsub))
+      .subscribe((online) => {
+        if (online) {
+          this._tempHumidService.$tempHumid.subscribe((res) => {
+            this.tempHumidObj = res;
+            this.humidityUpdates += 1;
+          });
+        }
+      });
   }
 }
