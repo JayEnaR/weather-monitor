@@ -30,8 +30,9 @@ export class TemperatureComponent {
     private _indexedDbservice: IndexedDbService,
     private _clientStatusService: ClientStatusService
   ) {
+    // State management
     this._indexedDbservice.getLatest().subscribe((latest) => {
-      this.tempHumidObj = latest;
+      if (latest) this.tempHumidObj = latest;
     });
 
     this._clientStatusService.status$
