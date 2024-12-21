@@ -15,6 +15,7 @@ export class TempHumidService {
   private tempHumidSrc = new ReplaySubject<ITempHumidModel>(1);
   $tempHumid = this.tempHumidSrc.asObservable();
   intervals: number;
+  prevTempMsgId: number = 0;
 
   constructor(
     private _mqttService: MqttService,
@@ -47,7 +48,19 @@ export class TempHumidService {
               // Delete oldest
               this._indexedDbService.removeFirst();
             }
-            this._indexedDbService.add(obj);
+            this._indexedDbService
+              .add(obj)
+              .subscribe({
+                next: (x) => {
+                  debugger
+                },
+                complete: () => {
+                  debugger
+                },
+                error: (e) => {
+                  // TODO: If the message is a duplicate then clear the indexedDb
+                },
+              });
           });
         });
       }

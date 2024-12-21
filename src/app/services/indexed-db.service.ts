@@ -18,8 +18,8 @@ export class IndexedDbService extends Dexie {
     });
   }
 
-  add(record: ITempHumidModel): void {
-    this.tableCtx.add(record, record.id);  
+  add(record: ITempHumidModel): Observable<any> {
+    return from(this.tableCtx.add(record, record.id));
   }
 
   getAllItems(): Observable<ITempHumidModel[]> {
@@ -30,10 +30,10 @@ export class IndexedDbService extends Dexie {
   getRowCount(): Observable<number> {
     return from(this.tableCtx.count());
   }
-  
+
   removeFirst(): void {
     const collection = this.tableCtx.toCollection();
-    collection.first().then(first => {
+    collection.first().then((first) => {
       this.tableCtx.delete(first!.id);
       console.log('delete id ', first?.id);
     });
@@ -41,9 +41,10 @@ export class IndexedDbService extends Dexie {
 
   getLatest(): Observable<ITempHumidModel> {
     const collection = this.tableCtx.toCollection();
-    return from(collection.last().then(last => {
-      return last!;
-    }));
+    return from(
+      collection.last().then((last) => {
+        return last!;
+      })
+    );
   }
-
 }
