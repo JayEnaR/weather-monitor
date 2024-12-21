@@ -66,6 +66,8 @@ export class ChartComponent {
     this._tempHumidService.$tempHumid.subscribe((res) => {
       this.updateChart(res.temperature, res.humidity);
     });
+
+    // this._indexeDbService.table$.subscribe(t => console.log(t));
   }
 
   updateChart(temp?: number, humid?: number): void {
@@ -74,7 +76,7 @@ export class ChartComponent {
     this.tempArr.push(temp ?? this.tempArr[this.humidArr.length - 1]);
     this.humidArr.push(humid ?? this.humidArr[this.humidArr.length - 1]);
     // We only want to see x intervals
-    if (this.tempArr.length == this.intervals + 1) {
+    if (this.tempArr.length >= this.intervals + 1) {
       this.tempArr.shift();
       this.humidArr.shift();
     }
