@@ -7,6 +7,7 @@ import { MQTT_TOPCIS } from '../mqtt/mqtt_topics';
 import { Time } from '../helpers/time';
 import { IndexedDbService } from './indexed-db.service';
 import { ConfigService } from './config.service';
+import { IIndexedDbError } from '../models/indexedDbError.model';
 
 @Injectable({
   providedIn: 'root',
@@ -15,7 +16,8 @@ export class TempHumidService {
   private tempHumidSrc = new ReplaySubject<ITempHumidModel>(1);
   $tempHumid = this.tempHumidSrc.asObservable();
   intervals: number;
-  prevTempMsgId: number = 0;
+  private prevTempMsgId: number = 0;
+  private prevHumidMsgId: number = 0;
 
   constructor(
     private _mqttService: MqttService,
@@ -34,34 +36,42 @@ export class TempHumidService {
           this._mqttService.observe(MQTT_TOPCIS.temperature, { qos: 1 }),
           this._mqttService.observe(MQTT_TOPCIS.humidity, { qos: 1 }),
         ]).subscribe(([temp, humid]) => {
-          const obj: ITempHumidModel = {
-            id: (temp.messageId! + humid.messageId!).toString(),
-            temperature: +temp.payload,
-            humidity: +humid.payload,
-            time: Time.getTime(),
-          };
-          this.tempHumidSrc.next(obj);
-          // State management
-          this._indexedDbService.getRowCount().subscribe((c) => {
-            // Only hold x amount of items
-            if (c == this.intervals) {
-              // Delete oldest
-              this._indexedDbService.removeFirst();
-            }
-            this._indexedDbService
-              .add(obj)
-              .subscribe({
+          // Handle duplicate message
+          if (
+            (!humid.dup && humid.messageId != this.prevHumidMsgId) ||
+            (!humid.dup && humid.messageId != this.prevHumidMsgId)
+          ) {
+            const obj: ITempHumidModel = {
+              id: (temp.messageId! + humid.messageId!).toString(),
+              temperature: +temp.payload,
+              humidity: +humid.payload,
+              time: Time.getTime(),
+            };
+            this.tempHumidSrc.next(obj);
+            // State management
+            this._indexedDbService.getRowCount().subscribe((c) => { // TODO: Change this to signal
+              // Only hold x amount of items
+              if (c == this.intervals) {
+                // Delete oldest
+                this._indexedDbService.removeFirst();
+              }
+              this._indexedDbService.add(obj).subscribe({
                 next: (x) => {
-                  debugger
+                  console.log('Added Key :', x);
                 },
-                complete: () => {
-                  debugger
-                },
-                error: (e) => {
-                  // TODO: If the message is a duplicate then clear the indexedDb
+                complete: () => {},
+                error: (e: IIndexedDbError) => {
+                  console.log(e.inner.code);
+                  if (e.inner.code == 0) {
+                    // Key exists - Delete db
+                    console.log(e);
+
+                    this._indexedDbService.clearDb();
+                  }
                 },
               });
-          });
+            });
+          }
         });
       }
     });

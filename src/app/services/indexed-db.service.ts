@@ -23,6 +23,12 @@ export class IndexedDbService extends Dexie {
   }
 
   getAllItems(): Observable<ITempHumidModel[]> {
+    /**
+     * TODO:
+     * Items are not sorted.
+     * Navigate away and back again and notice the last item in chart 
+     * Order by Key
+     */
     const collection = this.tableCtx.toCollection();
     return from(collection.toArray());
   }
@@ -46,5 +52,9 @@ export class IndexedDbService extends Dexie {
         return last!;
       })
     );
+  }
+
+  clearDb(): void {
+    this.tableCtx.clear();
   }
 }
