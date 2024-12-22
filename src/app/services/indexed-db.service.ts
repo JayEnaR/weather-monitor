@@ -19,6 +19,7 @@ export class IndexedDbService extends Dexie {
   }
 
   add(record: ITempHumidModel): Observable<any> {
+    console.log('Added key ', record.id);
     return from(this.tableCtx.add(record, record.id));
   }
 
@@ -41,7 +42,7 @@ export class IndexedDbService extends Dexie {
     const collection = this.tableCtx.toCollection();
     collection.first().then((first) => {
       this.tableCtx.delete(first!.id);
-      console.log('delete id ', first?.id);
+      console.log('Delete key ', first?.id);
     });
   }
 

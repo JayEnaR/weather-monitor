@@ -1,10 +1,15 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import {
-  ApexOptions,
-  NgApexchartsModule,
-  ApexAxisChartSeries,
-  ApexNonAxisChartSeries,
-} from 'ng-apexcharts';
+  AfterViewChecked,
+  AfterViewInit,
+  Component,
+  ElementRef,
+  Input,
+  OnChanges,
+  SimpleChanges,
+  ViewChild,
+} from '@angular/core';
+import { ApexOptions, NgApexchartsModule } from 'ng-apexcharts';
+import ApexCharts from 'apexcharts';
 import { ConfigService } from '../../services/config.service';
 import { IndexedDbService } from '../../services/indexed-db.service';
 import { Time } from '../../helpers/time';
@@ -17,13 +22,13 @@ import { TempHumidService } from '../../services/temp-humid.service';
   templateUrl: './chart.component.html',
   styleUrl: './chart.component.scss',
 })
-export class ChartComponent {
+export class ChartComponent implements AfterViewInit {
   private intervals: number;
   private tempArr: number[] = [];
   private humidArr: number[] = [];
   private seriesArr: string[] = [];
-
   public chartOptions: ApexOptions;
+  @ViewChild('chart') chart!: ApexCharts;
 
   constructor(
     private _configService: ConfigService,
@@ -39,7 +44,7 @@ export class ChartComponent {
       series: [],
       chart: { type: 'area', height: '400px' },
       xaxis: {
-        categories: [],
+        categories: [], // Needed for time value. When chart updates it scrolls to top
       },
       title: {
         offsetX: 15,
@@ -53,26 +58,37 @@ export class ChartComponent {
     // State management
     this._indexeDbService.getAllItems().subscribe((res) => {
       // Split the res array into temp and hmid
+      res = res.sort((a, b) => +a.id - +b.id);
       res.forEach((i) => {
-        this.humidArr.push(i.humidity), this.tempArr.push(i.temperature);
+        this.humidArr.push(i.humidity), this.tempArr.push(i.temperature), this.seriesArr.push(i.time);
       });
       this.chartOptions.series = [
         { data: this.tempArr, name: 'Temperature' },
         { data: this.humidArr, name: 'Humidity' },
       ];
+      this.chartOptions.xaxis!.categories = this.seriesArr;
+      console.table(res)
     });
 
     // Temp and Humid Subscription
     this._tempHumidService.$tempHumid.subscribe((res) => {
-      this.updateChart(res.temperature, res.humidity);
+      // this.updateChart(res.temperature, res.humidity);
     });
+  }
 
-    // this._indexeDbService.table$.subscribe(t => console.log(t));
+  ngAfterViewInit(): void {
+    // this.chart = new ApexCharts(
+    //   document.querySelector('#chart'),
+    //   this.chartOptions
+    // );
   }
 
   updateChart(temp?: number, humid?: number): void {
     const time = Time.getTime();
     this.seriesArr.push(time);
+    // TODO: Display time
+    // this.chartOptions.xaxis!.categories = this.seriesArr;
+
     this.tempArr.push(temp ?? this.tempArr[this.humidArr.length - 1]);
     this.humidArr.push(humid ?? this.humidArr[this.humidArr.length - 1]);
     // We only want to see x intervals
@@ -84,6 +100,11 @@ export class ChartComponent {
       { data: this.tempArr, name: 'Temperature' },
       { data: this.humidArr, name: 'Humidity' },
     ];
-    this.chartOptions.xaxis!.categories = this.seriesArr;
+
+    this.chart.updateOptions({
+      xaxis: {
+        categories: this.seriesArr,
+      },
+    });
   }
 }
