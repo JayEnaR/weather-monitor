@@ -5,7 +5,7 @@ import { dematerialize, Subject, takeUntil } from 'rxjs';
 import { MQTT_TOPCIS } from '../../mqtt/mqtt_topics';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenu } from '@angular/material/menu';
-import { IWeatherResponse } from '../../models/weather-response.model';
+import { IWeatherResponse } from '../../models/IWeatherResponse.model';
 import { DecimalRound } from "../../helpers/decimalRound";
 import { GpsService } from '../../services/gps.service';
 

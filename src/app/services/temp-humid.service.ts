@@ -7,7 +7,8 @@ import { MQTT_TOPCIS } from '../mqtt/mqtt_topics';
 import { Time } from '../helpers/time';
 import { IndexedDbService } from './indexed-db.service';
 import { ConfigService } from './config.service';
-import { IIndexedDbError } from '../models/indexedDbError.model';
+import { IIndexedDbError } from '../models/IIndexedDbError.model';
+import { IMqttPayload } from '../models/IMqttPayload.model';
 
 @Injectable({
   providedIn: 'root',
@@ -36,7 +37,10 @@ export class TempHumidService {
           this._mqttService.observe(MQTT_TOPCIS.temperature, { qos: 1, rh: 2 }),
           this._mqttService.observe(MQTT_TOPCIS.humidity, { qos: 1, rh: 2 }),
         ]).subscribe(([temp, humid]) => {
-          console.log("payload ", temp.payload);
+          // console.log("payload ", temp.payload.toString());
+          const payload: IMqttPayload = JSON.parse(temp.payload.toString());
+          console.log(payload);
+          
           // console.log("humidID ", humid);
 
           // Handle duplicate message
