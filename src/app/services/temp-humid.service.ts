@@ -38,8 +38,10 @@ export class TempHumidService {
           this._mqttService.observe(MQTT_TOPCIS.humidity, { qos: 1, rh: 2 }),
         ]).subscribe(([temp, humid]) => {
           // console.log("payload ", temp.payload.toString());
-          const payload: IMqttPayload = JSON.parse(temp.payload.toString());
-          console.log(payload);
+          const temperature: IMqttPayload = JSON.parse(temp.payload.toString());
+          const humidity: IMqttPayload = JSON.parse(humid.payload.toString());
+
+          console.log(temperature);
           
           // console.log("humidID ", humid);
 
@@ -52,9 +54,9 @@ export class TempHumidService {
             this.prevTempMsgId = temp.messageId!;
 
             const obj: ITempHumidModel = {
-              id: (temp.messageId! + humid.messageId!).toString(),
-              temperature: +temp.payload,
-              humidity: +humid.payload,
+              id: Time.getMostRecent(temperature.stamp, humidity.stamp), // TODO: get the lates of the two dateTimes
+              temperature: +temperature.msg,
+              humidity: +humidity.msg,
               time: Time.getTime(),
             };
 
