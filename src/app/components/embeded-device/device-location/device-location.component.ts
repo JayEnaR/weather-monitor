@@ -9,6 +9,7 @@ import { Subject, take, takeUntil } from 'rxjs';
 import { MatIcon } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { GpsService } from '../../../services/gps.service';
+import { IMqttPayload } from '../../../models/IMqttPayload.model';
 
 @Component({
   selector: 'app-device-location',
@@ -75,20 +76,20 @@ export class DeviceLocationComponent implements AfterViewInit, OnDestroy {
 
   private initSubscriptions(): void {
     // GSP search state
-    this._gspService.isGpsSearching$
-      .subscribe((searching) => {
-        this.locatingDevice = searching;
-        console.log('searching ', this.locatingDevice);
-      });
+    this._gspService.isGpsSearching$.subscribe((searching) => {
+      this.locatingDevice = searching;
+      console.log('searching ', this.locatingDevice);
+    });
 
     this._gspService
       .getGpsCoordinates()
       .pipe(takeUntil(this.$unsub))
       .subscribe((res) => {
-        const coord = res.payload.toString().split(',');
+        const coord: IMqttPayload = JSON.parse(res.payload.toString());
+        const split = coord.msg.split(',');
 
-        this.coordinates.lat = +coord[0];
-        this.coordinates.lng = +coord[1];
+        this.coordinates.lat = +split[0];
+        this.coordinates.lng = +split[1];
         this.circle.setLatLng(this.coordinates);
 
         if (
