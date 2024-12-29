@@ -34,8 +34,8 @@ export class TempHumidService {
     this._clientStatusService.status$.subscribe((status) => {
       if (status) {
         combineLatest([
-          this._mqttService.observe(MQTT_TOPCIS.temperature, { qos: 1, rh: 2 }),
-          this._mqttService.observe(MQTT_TOPCIS.humidity, { qos: 1, rh: 2 }),
+          this._mqttService.observeRetained(MQTT_TOPCIS.temperature, { qos: 1, rh: 2 }),
+          this._mqttService.observeRetained(MQTT_TOPCIS.humidity, { qos: 1, rh: 2 }),
         ]).subscribe(([temp, humid]) => {
           // console.log("payload ", temp.payload.toString());
           const temperature: IMqttPayload = JSON.parse(temp.payload.toString());
