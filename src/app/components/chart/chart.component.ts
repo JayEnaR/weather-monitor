@@ -55,6 +55,8 @@ export class ChartComponent implements AfterViewInit {
       colors: ['#3b82f6', '#f59e0b'],
     };
 
+    // TODO: Only get idexedDb items if device is online
+    
     // State management
     this._indexeDbService.getAllItems().subscribe((res) => {
       // Split the res array into temp and hmid

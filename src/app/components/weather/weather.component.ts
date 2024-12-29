@@ -8,6 +8,7 @@ import { MatMenu } from '@angular/material/menu';
 import { IWeatherResponse } from '../../models/IWeatherResponse.model';
 import { DecimalRound } from "../../helpers/decimalRound";
 import { GpsService } from '../../services/gps.service';
+import { IMqttPayload } from '../../models/IMqttPayload.model';
 
 @Component({
   selector: 'app-weather',
@@ -37,11 +38,12 @@ export class WeatherComponent implements OnDestroy {
     this._gpsService.getGpsCoordinates()
       .pipe(takeUntil(this.$unsubStatus))
       .subscribe((res) => {
-        const coord = res.payload.toString().split(',');
-        if (coord[0] && coord[1]) {
+        const coord : IMqttPayload = JSON.parse(res.payload.toString());
+        const split = coord.msg.split(',');
+        if (split[0] && split[1]) {
           // Weather api
           this._weatherService
-            .getWeather(coord[0], coord[1])
+            .getWeather(split[0], split[1])
             .subscribe((res) => {
               res.main = {
                 ...res.main,
