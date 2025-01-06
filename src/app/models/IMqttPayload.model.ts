@@ -1,4 +1,4 @@
 export interface IMqttPayload {
-    stamp: string;
+    stamp: number;
     msg: string;
 }

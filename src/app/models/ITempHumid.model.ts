@@ -1,5 +1,5 @@
 export interface ITempHumidModel {
-    id: string;
+    id: any;
     temperature: number;
     humidity: number;
     time: string;

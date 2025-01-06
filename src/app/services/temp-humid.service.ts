@@ -37,13 +37,8 @@ export class TempHumidService {
           this._mqttService.observeRetained(MQTT_TOPCIS.temperature, { qos: 1, rh: 2 }),
           this._mqttService.observeRetained(MQTT_TOPCIS.humidity, { qos: 1, rh: 2 }),
         ]).subscribe(([temp, humid]) => {
-          // console.log("payload ", temp.payload.toString());
           const temperature: IMqttPayload = JSON.parse(temp.payload.toString());
           const humidity: IMqttPayload = JSON.parse(humid.payload.toString());
-
-          console.log(temperature);
-          
-          // console.log("humidID ", humid);
 
           // Handle duplicate message
           if (
@@ -54,13 +49,11 @@ export class TempHumidService {
             this.prevTempMsgId = temp.messageId!;
 
             const obj: ITempHumidModel = {
-              id: Time.getMostRecent(temperature.stamp, humidity.stamp), // TODO: get the lates of the two dateTimes
+              id: `${temperature.stamp}-${humidity.stamp}`,
               temperature: +temperature.msg,
               humidity: +humidity.msg,
               time: Time.getTime(),
             };
-
-            // console.log(obj.id, ' - ', performance.now());
 
             this.tempHumidSrc.next(obj);
             // State management
