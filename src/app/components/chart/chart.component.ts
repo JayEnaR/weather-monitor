@@ -81,9 +81,7 @@ export class ChartComponent implements AfterViewInit {
 
     // Temp and Humid Subscription
     this._tempHumidService.$tempHumid.subscribe((res) => {
-      console.log(res);
-
-      this.updateChart(res.temperature, res.humidity);
+      this.updateChart(res);
     });
   }
 
@@ -106,20 +104,19 @@ export class ChartComponent implements AfterViewInit {
     });
   }
 
-  updateChart(temp?: number, humid?: number): void {
-    const time = Time.getTime();
-    this.seriesArr.push(time);
-
-    // TODO: compare the time and display the greates of the two
-    // TODO: Display time
-    // this.chartOptions.xaxis!.categories = this.seriesArr;
-
-    this.tempArr.push(temp ?? this.tempArr[this.humidArr.length - 1]);
-    this.humidArr.push(humid ?? this.humidArr[this.humidArr.length - 1]);
+  updateChart(data: ITempHumidModel): void {
+    this.seriesArr.push(data.time);
+    this.tempArr.push(
+      data.temperature ?? this.tempArr[this.humidArr.length - 1]
+    );
+    this.humidArr.push(
+      data.humidity ?? this.humidArr[this.humidArr.length - 1]
+    );
     // We only want to see x intervals
     if (this.tempArr.length >= this.intervals + 1) {
       this.tempArr.shift();
       this.humidArr.shift();
+      this.seriesArr.shift();
     }
     this.chartOptions.series = [
       { data: this.tempArr, name: 'Temperature' },
