@@ -34,8 +34,14 @@ export class TempHumidService {
     this._clientStatusService.status$.subscribe((status) => {
       if (status) {
         combineLatest([
-          this._mqttService.observeRetained(MQTT_TOPCIS.temperature, { qos: 1, rh: 2 }),
-          this._mqttService.observeRetained(MQTT_TOPCIS.humidity, { qos: 1, rh: 2 }),
+          this._mqttService.observeRetained(MQTT_TOPCIS.temperature, {
+            qos: 1,
+            rh: 2,
+          }),
+          this._mqttService.observeRetained(MQTT_TOPCIS.humidity, {
+            qos: 1,
+            rh: 2,
+          }),
         ]).subscribe(([temp, humid]) => {
           const temperature: IMqttPayload = JSON.parse(temp.payload.toString());
           const humidity: IMqttPayload = JSON.parse(humid.payload.toString());
@@ -65,18 +71,20 @@ export class TempHumidService {
                 this._indexedDbService.removeFirst();
               }
               // Add
-              this._indexedDbService.add(obj).subscribe({
-                next: (x) => {},
-                complete: () => {},
-                error: (e: IIndexedDbError) => {
-                  // console.log(e.inner.code);
-                  if (e.inner.code == 0) {
-                    // Key exists - Delete db
-                    // console.log(e);
-                    // this._indexedDbService.clearDb();
-                  }
-                },
-              });
+              if (c < this.intervals) {
+                this._indexedDbService.add(obj).subscribe({
+                  next: (x) => {},
+                  complete: () => {},
+                  error: (e: IIndexedDbError) => {
+                    // console.log(e.inner.code);
+                    if (e.inner.code == 0) {
+                      // Key exists - Delete db
+                      // console.log(e);
+                      // this._indexedDbService.clearDb();
+                    }
+                  },
+                });
+              }
             });
           }
         });
