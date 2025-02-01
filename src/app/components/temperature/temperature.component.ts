@@ -35,17 +35,17 @@ export class TemperatureComponent {
       if (latest) this.tempHumidObj = latest;
     });
 
-    this._clientStatusService.status$
-      .pipe(takeUntil(this.$unsub))
-      .subscribe((online) => {
-        if (online) {
+    // this._clientStatusService.status$
+    //   .pipe(takeUntil(this.$unsub))
+    //   .subscribe((online) => {
+    //     if (online) {
           this._tempHumidService.$tempHumid.subscribe((res) => {
             if(res.temperature != this.tempHumidObj.temperature){
               this.temperatureUpdates += 1;
             }
             this.tempHumidObj = res;
           });
-        }
-      });
+      //   }
+      // });
   }
 }
