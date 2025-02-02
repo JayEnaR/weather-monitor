@@ -27,25 +27,17 @@ export class HumidityComponent {
 
   constructor(
     private _tempHumidService: TempHumidService,
-    private _indexedDbservice: IndexedDbService,
-    private _clientStatusService: ClientStatusService
+    private _indexedDbservice: IndexedDbService
   ) {
     // State management
     this._indexedDbservice.getLatest().subscribe((latest) => {
       if (latest) this.tempHumidObj = latest;
     });
-
-    // this._clientStatusService.status$
-    //   .pipe(takeUntil(this.$unsub))
-    //   .subscribe((online) => {
-    //     if (online) {
-          this._tempHumidService.$tempHumid.subscribe((res) => {
-            if(res.humidity != this.tempHumidObj.humidity){
-              this.humidityUpdates += 1;
-            }
-            this.tempHumidObj = res;
-          });
-      //   }
-      // });
+    this._tempHumidService.$tempHumid.subscribe((res) => {
+      if (res.humidity != this.tempHumidObj.humidity) {
+        this.humidityUpdates += 1;
+      }
+      this.tempHumidObj = res;
+    });
   }
 }

@@ -32,7 +32,7 @@ export class TempHumidService {
 
   private observeTempHumid(): void {
     this._clientStatusService.status$.subscribe((isOnline) => {
-      if (isOnline) {
+      if (true) {
         combineLatest([
           this._mqttService.observeRetained(MQTT_TOPCIS.temperature, {
             qos: 1,

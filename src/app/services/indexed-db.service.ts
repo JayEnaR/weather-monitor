@@ -34,21 +34,16 @@ export class IndexedDbService extends Dexie {
 
   removeFirst(): void {
     const collection = this.tableCtx.toCollection();
-    collection.first().then((first) => {
-      this.tableCtx.delete(first!.id);
-      console.log('Delete key ', first?.id);
+    collection.sortBy('time').then((res) => {
+      this.tableCtx.delete(res[0].id);
     });
   }
 
   getLatest(): Observable<ITempHumidModel> {
-    // this.table$.subscribe(res => {
-    //   console.log(res);
-      
-    // })
-    // TODO: get latest must be based on time
     const collection = this.tableCtx.toCollection();
-    return from (collection.sortBy('time')).pipe(map(table => table[table.length - 1]));
-
+    return from(collection.sortBy('time')).pipe(
+      map((table) => table[table.length - 1])
+    );
   }
 
   clearDb(): void {
