@@ -32,12 +32,13 @@ export class TemperatureComponent {
     // State management
     this._indexedDbservice.getLatest().subscribe((latest) => {
       if (latest) this.tempHumidObj = latest;
-    });
-    this._tempHumidService.$tempHumid.subscribe((res) => {
-      if (res.temperature != this.tempHumidObj.temperature) {
-        this.temperatureUpdates += 1;
-        this.tempHumidObj = res;
-      }
+      
+      this._tempHumidService.$tempHumid.subscribe((res) => {
+        if (res.temperature != this.tempHumidObj.temperature) {
+          this.temperatureUpdates += 1;
+          this.tempHumidObj = res;
+        }
+      });
     });
   }
 }
