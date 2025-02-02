@@ -12,7 +12,6 @@ import { ApexOptions, NgApexchartsModule } from 'ng-apexcharts';
 import ApexCharts from 'apexcharts';
 import { ConfigService } from '../../services/config.service';
 import { IndexedDbService } from '../../services/indexed-db.service';
-import { Time } from '../../helpers/time';
 import { TempHumidService } from '../../services/temp-humid.service';
 import { ITempHumidModel } from '../../models/ITempHumid.model';
 

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import Dexie from 'dexie';
 import { liveQuery } from 'dexie';
 import { ITempHumidModel } from '../models/ITempHumid.model';
-import { first, from, Observable } from 'rxjs';
+import { first, from, map, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -24,12 +24,6 @@ export class IndexedDbService extends Dexie {
   }
 
   getAllItems(): Observable<ITempHumidModel[]> {
-    /**
-     * TODO:
-     * Items are not sorted.
-     * Navigate away and back again and notice the last item in chart 
-     * Order by Key
-     */
     const collection = this.tableCtx.toCollection();
     return from(collection.toArray());
   }
@@ -47,12 +41,14 @@ export class IndexedDbService extends Dexie {
   }
 
   getLatest(): Observable<ITempHumidModel> {
+    // this.table$.subscribe(res => {
+    //   console.log(res);
+      
+    // })
+    // TODO: get latest must be based on time
     const collection = this.tableCtx.toCollection();
-    return from(
-      collection.last().then((last) => {
-        return last!;
-      })
-    );
+    return from (collection.sortBy('time')).pipe(map(table => table[table.length - 1]));
+
   }
 
   clearDb(): void {

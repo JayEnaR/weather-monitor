@@ -4,7 +4,7 @@ import { combineLatest, ReplaySubject } from 'rxjs';
 import { MqttService } from 'ngx-mqtt';
 import { ClientStatusService } from './client-status.service';
 import { MQTT_TOPCIS } from '../mqtt/mqtt_topics';
-import { Time } from '../helpers/time';
+import { Time } from '../util/time';
 import { IndexedDbService } from './indexed-db.service';
 import { ConfigService } from './config.service';
 import { IIndexedDbError } from '../models/IIndexedDbError.model';

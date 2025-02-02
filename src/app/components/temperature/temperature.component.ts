@@ -32,6 +32,7 @@ export class TemperatureComponent {
   ) {
     // State management
     this._indexedDbservice.getLatest().subscribe((latest) => {
+      debugger
       if (latest) this.tempHumidObj = latest;
     });
 
