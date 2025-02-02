@@ -36,8 +36,8 @@ export class TemperatureComponent {
     this._tempHumidService.$tempHumid.subscribe((res) => {
       if (res.temperature != this.tempHumidObj.temperature) {
         this.temperatureUpdates += 1;
+        this.tempHumidObj = res;
       }
-      this.tempHumidObj = res;
     });
   }
 }

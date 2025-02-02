@@ -36,8 +36,8 @@ export class HumidityComponent {
     this._tempHumidService.$tempHumid.subscribe((res) => {
       if (res.humidity != this.tempHumidObj.humidity) {
         this.humidityUpdates += 1;
+        this.tempHumidObj = res;
       }
-      this.tempHumidObj = res;
     });
   }
 }

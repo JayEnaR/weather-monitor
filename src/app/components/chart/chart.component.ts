@@ -59,7 +59,6 @@ export class ChartComponent implements AfterViewInit {
     this._indexeDbService.getAllItems().subscribe((res) => {
       // Split the res array into temp and hmid
       res = this.orderByTime(res);
-      console.table(res);
 
       res.forEach((i) => {
         this.humidArr.push(i.humidity),
@@ -76,11 +75,11 @@ export class ChartComponent implements AfterViewInit {
           categories: this.seriesArr,
         },
       });
-    });
 
-    // Temp and Humid Subscription
-    this._tempHumidService.$tempHumid.subscribe((res) => {
-      this.updateChart(res);
+      // Temp and Humid Subscription
+      this._tempHumidService.$tempHumid.subscribe((res) => {
+        this.updateChart(res);
+      });
     });
   }
 
