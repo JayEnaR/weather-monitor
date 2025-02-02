@@ -69,6 +69,7 @@ export class TempHumidService {
               if (c == this.intervals) {
                 // Delete oldest
                 this._indexedDbService.removeFirst();
+                c --;
               }
               // Add
               if (c < this.intervals) {
